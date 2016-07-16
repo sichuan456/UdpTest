@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.e("ssoutouooooo999999999999","sssoooooo99999999999999");
+        Log.e("s1111111","1111111111");
 
         execPostMethod();
 
