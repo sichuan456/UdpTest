@@ -22,21 +22,71 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public class MainActivity extends AppCompatActivity {
 
 //    OkHttpClient client = new OkHttpClient();
 
+    private static final String BASE_URL = "http://apis.baidu.com";
+    private static final String API_KEY = "9be1d688122fb69554a98eb3b44f6149";
+
+    private void query(){
+        //1.创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())//解析方法
+                .baseUrl(BASE_URL)//主机地址
+                .build();
+
+        //2.创建访问API的请求
+        PhoneService service = retrofit.create(PhoneService.class);
+        Call<PhoneResult> call = service.getResult(API_KEY, "15624055438");
+
+        //3.发送请求
+        call.enqueue(new Callback<PhoneResult>() {
+            @Override
+            public void onResponse(Call<PhoneResult> call, Response<PhoneResult> response) {
+                //4.处理结果
+//                if (response.isSuccess()){
+//                    PhoneResult result = response.body();
+//                    if (result != null){
+//                        PhoneResult.RetDataEntity entity = result.getRetData();
+//                    }
+//                }
+                if(response.isSuccessful()){
+                    PhoneResult result = response.body();
+                    if (result != null){
+                        PhoneResult.RetDataEntity entity = result.getRetData();
+                        Log.e("&&&&&&&&&&",result.toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PhoneResult> call, Throwable t) {
+                Log.e("&qqqqqqqqqqqqq",t.toString());
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        execPostMethod();
+//        execPostMethod();
+        query();
+    }
 
+    public interface PhoneService {
+        @GET("/apistore/mobilenumber/mobilenumber")
+        Call<PhoneResult> getResult(@Header("apikey") String apikey, @Query("phone") String phone);
     }
 
 
